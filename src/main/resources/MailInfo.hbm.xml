@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class name="models.MailInfo" table="MAILINFO">
+        <id name="id" column="ID">
+            <generator class="increment"/>
+        </id>
+        <property name="mailServer" column="mailServer"/>
+        <property name="port" type="integer" column="port"/>
+        <property name="emailId" column="emailId"/>
+        <property name="password" column="password"/>
+        <property name="sslEnabled" type="yes_no" column="sslEnabled"/>
+    </class>
+
+</hibernate-mapping>
