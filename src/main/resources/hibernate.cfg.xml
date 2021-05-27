@@ -41,6 +41,7 @@
         <property name="hbm2ddl.auto">update</property>
 
         <mapping resource="MailInfo.hbm.xml"/>
+        <mapping resource="Member.hbm.xml"/>
 
     </session-factory>
 

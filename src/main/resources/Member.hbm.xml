@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class name="models.Member" table="MEMBER">
+        <id name="id" column="ID">
+            <generator class="increment"/>
+        </id>
+        <property name="name" column="name"/>
+        <property name="email" column="email"/>
+        <property name="mobile" column="mobile"/>
+    </class>
+
+</hibernate-mapping>

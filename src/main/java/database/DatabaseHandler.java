@@ -1,6 +1,7 @@
 package database;
 
 import models.MailInfo;
+import models.Member;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
@@ -30,6 +31,14 @@ public class DatabaseHandler {
             e.printStackTrace();
             StandardServiceRegistryBuilder.destroy( registry );
         }
+    }
+
+    public void insertMember(Member member) {
+        int i = 0;
+    }
+
+    public void deleteMember() {
+        int i = 0;
     }
 
     public void deleteAllMailServerInfo() {
