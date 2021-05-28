@@ -23,7 +23,7 @@
         -->
 
         <!-- JDBC connection pool (use the built-in) -->
-        <property name="connection.pool_size">1</property>
+        <property name="connection.pool_size">100</property>
 
         <!-- SQL dialect -->
         <property name="dialect">org.hibernate.dialect.DerbyTenSevenDialect</property>
@@ -39,10 +39,12 @@
         <property name="hbm2ddl.auto">create</property>
         -->
         <property name="hbm2ddl.auto">update</property>
-
+<!--
         <mapping resource="MailInfo.hbm.xml"/>
         <mapping resource="Member.hbm.xml"/>
-
+-->
+        <mapping class="models.Member"/>
+        <mapping class="models.MailInfo"/>
     </session-factory>
 
 </hibernate-configuration>

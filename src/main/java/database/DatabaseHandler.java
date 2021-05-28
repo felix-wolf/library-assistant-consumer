@@ -34,11 +34,44 @@ public class DatabaseHandler {
     }
 
     public void insertMember(Member member) {
-        int i = 0;
+        try {
+            Session session = sessionFactory.openSession();
+            session.beginTransaction();
+            session.save(member);
+            session.getTransaction().commit();
+            session.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public void deleteMember() {
-        int i = 0;
+    public void updateMember(Member member) {
+        try {
+            Session session = sessionFactory.openSession();
+            session.beginTransaction();
+            Member member1 = session.get(Member.class, member.getId());
+            member1.setEmail(member.getEmail());
+            member1.setId(member.getId());
+            member1.setMobile(member.getMobile());
+            member1.setName(member.getName());
+            session.update(member1);
+            session.getTransaction().commit();
+            session.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteMember(Member member) {
+        try {
+            Session session = sessionFactory.openSession();
+            session.beginTransaction();
+            session.delete(member);
+            session.getTransaction().commit();
+            session.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void deleteAllMailServerInfo() {
@@ -54,11 +87,16 @@ public class DatabaseHandler {
     }
 
     public void insertMailServerInfo(MailInfo mailInfo) {
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        session.save(mailInfo);
-        session.getTransaction().commit();
-        session.close();
+        try {
+            Session session = sessionFactory.openSession();
+            session.beginTransaction();
+            session.save(mailInfo);
+            session.getTransaction().commit();
+            session.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 }

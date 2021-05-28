@@ -1,15 +1,20 @@
 package core;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import database.DatabaseHandler;
 import dto.mailInfo.MailInfoDTO;
 import dto.mailInfo.MailInfoDTOConverter;
-import dto.member.MemberDTO;
-import dto.member.MemberDTOConverter;
+import dto.operation.OperationDTO;
+import dto.operation.OperationDTOConverter;
+import dto.operation.OperationDTODeserializer;
 import models.MailInfo;
 import models.Member;
 import models.Operation;
-import org.apache.kafka.clients.consumer.*;
+import org.apache.kafka.clients.consumer.Consumer;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.common.serialization.LongDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 
@@ -20,7 +25,7 @@ import java.util.Properties;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 
-public class MailInfoConsumer {
+public class KafkaConsumer {
 
     private static Consumer<Long, String> createConsumer() {
         final Properties props = new Properties();
@@ -30,7 +35,7 @@ public class MailInfoConsumer {
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "KafkaExampleConsumer");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class.getName());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        final Consumer<Long, String> consumer = new KafkaConsumer<>(props);
+        final Consumer<Long, String> consumer = new org.apache.kafka.clients.consumer.KafkaConsumer<>(props);
         List<String> topicsToSubscribe = Arrays.asList(Constants.MAIL_SERVER_INFO_TOPIC, Constants.MEMBER_TOPIC);
         consumer.subscribe(topicsToSubscribe);
         return consumer;
@@ -66,16 +71,26 @@ public class MailInfoConsumer {
 
     private static void processMemberRecord(ConsumerRecord<Long, String> record) {
         System.out.println("memberRecord");
-        Gson gson = new Gson();
-        Operation operation = gson.fromJson(record.value(), Operation.class);
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(OperationDTO.class, new OperationDTODeserializer());
+        Gson gson = gsonBuilder.create();
+        OperationDTO operationDTO = gson.fromJson(record.value(), OperationDTO.class);
+        Operation operation = OperationDTOConverter.toEntity(operationDTO);
+        assert operation != null;
+        Member member = (Member) operation.getObject();
         switch (operation.getOperationType()) {
-            case INSERT:
-                MemberDTO memberDTO = gson.fromJson(operation.getObject().toString(), MemberDTO.class);
-                Member member = MemberDTOConverter.toEntity(memberDTO);
+            case INSERT: {
                 DatabaseHandler.getInstance().insertMember(member);
                 break;
-            case UPDATE: break;
-            case DELETE: break;
+            }
+            case UPDATE: {
+                DatabaseHandler.getInstance().updateMember(member);
+                break;
+            }
+            case DELETE: {
+                DatabaseHandler.getInstance().deleteMember(member);
+                break;
+            }
         }
     }
 

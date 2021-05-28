@@ -7,9 +7,7 @@
 <hibernate-mapping>
 
     <class name="models.Member" table="MEMBER">
-        <id name="id" column="ID">
-            <generator class="increment"/>
-        </id>
+        <id name="id" column="ID"/>
         <property name="name" column="name"/>
         <property name="email" column="email"/>
         <property name="mobile" column="mobile"/>

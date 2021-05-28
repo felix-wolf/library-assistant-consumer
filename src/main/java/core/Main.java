@@ -14,7 +14,7 @@ public class Main {
         // handler.deleteAllMailServerInfo();
         // handler.testOperation();
         try {
-            MailInfoConsumer.runConsumer();
+            KafkaConsumer.runConsumer();
         } catch (Exception e) {
             e.printStackTrace();
         }
