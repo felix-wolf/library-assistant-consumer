@@ -1,5 +1,7 @@
 package models;
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -16,11 +18,12 @@ public class MailInfo {
     private Integer port;
     private String emailId;
     private String password;
-    private Boolean sslEnabled;
+    @Type(type="yes_no")
+    private boolean sslEnabled;
 
     public MailInfo() { }
 
-    public MailInfo(String mailServer, Integer port, String emailId, String password, Boolean sslEnabled) {
+    public MailInfo(String mailServer, Integer port, String emailId, String password, boolean sslEnabled) {
         this.mailServer = mailServer;
         this.port = port;
         this.emailId = emailId;
@@ -68,11 +71,11 @@ public class MailInfo {
         this.password = password;
     }
 
-    public Boolean getSslEnabled() {
+    public boolean getSslEnabled() {
         return sslEnabled;
     }
 
-    public void setSslEnabled(Boolean sslEnabled) {
+    public void setSslEnabled(boolean sslEnabled) {
         this.sslEnabled = sslEnabled;
     }
 }

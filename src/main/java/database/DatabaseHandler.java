@@ -8,6 +8,10 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import java.util.List;
+
 public class DatabaseHandler {
 
     private SessionFactory sessionFactory;
@@ -45,16 +49,30 @@ public class DatabaseHandler {
         }
     }
 
+    public Member getMember(Member member) {
+        try {
+            Session session = sessionFactory.openSession();
+            session.beginTransaction();
+            member = session.get(Member.class, member.getId());
+            session.getTransaction().commit();
+            session.close();
+            return member;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public void updateMember(Member member) {
         try {
             Session session = sessionFactory.openSession();
             session.beginTransaction();
-            Member member1 = session.get(Member.class, member.getId());
-            member1.setEmail(member.getEmail());
-            member1.setId(member.getId());
-            member1.setMobile(member.getMobile());
-            member1.setName(member.getName());
-            session.update(member1);
+            member = session.get(Member.class, member.getId());
+            member.setEmail(member.getEmail());
+            member.setId(member.getId());
+            member.setMobile(member.getMobile());
+            member.setName(member.getName());
+            session.update(member);
             session.getTransaction().commit();
             session.close();
         } catch (Exception e) {
@@ -74,16 +92,21 @@ public class DatabaseHandler {
         }
     }
 
-    public void deleteAllMailServerInfo() {
+    public MailInfo getMailServerInfo() {
         try {
             Session session = sessionFactory.openSession();
             session.beginTransaction();
-            session.createQuery("delete from MailInfo").executeUpdate();
+            CriteriaBuilder builder = session.getCriteriaBuilder();
+            CriteriaQuery<MailInfo> criteria = builder.createQuery(MailInfo.class);
+            criteria.from(MailInfo.class);
+            List<MailInfo> data = session.createQuery(criteria).getResultList();
             session.getTransaction().commit();
             session.close();
+            return data.get(0);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     public void insertMailServerInfo(MailInfo mailInfo) {
@@ -96,7 +119,18 @@ public class DatabaseHandler {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
 
+    public void deleteAllMailServerInfo() {
+        try {
+            Session session = sessionFactory.openSession();
+            session.beginTransaction();
+            session.createQuery("delete from MailInfo").executeUpdate();
+            session.getTransaction().commit();
+            session.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

@@ -10,9 +10,6 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("start");
         silenceLoggers();
-        // DatabaseHandler handler = new DatabaseHandler();
-        // handler.deleteAllMailServerInfo();
-        // handler.testOperation();
         try {
             KafkaConsumer.runConsumer();
         } catch (Exception e) {

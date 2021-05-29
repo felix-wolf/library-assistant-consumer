@@ -57,4 +57,8 @@ public class Member {
     public void setMobile(String mobile) {
         this.mobile = mobile;
     }
+
+    public boolean isValid() {
+        return this.email != null && this.mobile != null && this.name != null;
+    }
 }

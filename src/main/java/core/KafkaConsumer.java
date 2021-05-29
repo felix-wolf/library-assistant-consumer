@@ -64,13 +64,12 @@ public class KafkaConsumer {
                         break;
                 }
             });
-            //consumer.commitAsync();
+            consumer.commitAsync();
         }
         consumer.close();
     }
 
     private static void processMemberRecord(ConsumerRecord<Long, String> record) {
-        System.out.println("memberRecord");
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(OperationDTO.class, new OperationDTODeserializer());
         Gson gson = gsonBuilder.create();
@@ -80,15 +79,25 @@ public class KafkaConsumer {
         Member member = (Member) operation.getObject();
         switch (operation.getOperationType()) {
             case INSERT: {
+                EmailService.greetNewMember(member);
                 DatabaseHandler.getInstance().insertMember(member);
                 break;
             }
             case UPDATE: {
-                DatabaseHandler.getInstance().updateMember(member);
+                Member databaseMember = DatabaseHandler.getInstance().getMember(member);
+                if (databaseMember != null && databaseMember.isValid()) {
+                    EmailService.informAboutUpdate(databaseMember);
+                    DatabaseHandler.getInstance().updateMember(member);
+                }
+
                 break;
             }
             case DELETE: {
-                DatabaseHandler.getInstance().deleteMember(member);
+                Member databaseMember = DatabaseHandler.getInstance().getMember(member);
+                if (databaseMember != null && databaseMember.isValid()) {
+                    EmailService.sayGoodByeToLeavingMember(databaseMember);
+                    DatabaseHandler.getInstance().deleteMember(databaseMember);
+                }
                 break;
             }
         }
